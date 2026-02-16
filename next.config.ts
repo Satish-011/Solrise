@@ -29,25 +29,6 @@ const nextConfig: NextConfig = {
         value:
           "camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=(), usb=()",
       },
-      {
-        key: "Content-Security-Policy",
-        value: [
-          "default-src 'self'",
-          isDev
-            ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'"
-            : "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com",
-          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
-          "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-          "img-src 'self' data: https: blob:",
-          "connect-src 'self' https://codeforces.com",
-          "object-src 'none'",
-          "frame-ancestors 'none'",
-          "base-uri 'self'",
-          "form-action 'self'",
-          ...(isDev ? [] : ["upgrade-insecure-requests"]),
-        ].join("; "),
-      },
-      { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
       ...(isDev
         ? []
         : [
