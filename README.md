@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Solrise - Codeforces Ladder & Analytics Dashboard
+
+Solrise is a modern competitive programming dashboard for Codeforces users. It helps you track your progress, visualize stats, and climb the ladder efficiently.
+
+**Features:**
+
+- Personalized Codeforces ladder
+- Contest stats and analytics
+- Hide solved problems per topic
+- Contribution heatmap, rating charts, streak tracker
+- Secure API routes, input validation, and production-ready deployment
+- Custom favicon and branding (orange lightning bolt logo)
+
+**Live Demo:** [solrise-alpha.vercel.app](https://solrise-alpha.vercel.app)
+
+---
 
 ## Getting Started
 
-First, run the development server:
+## Getting Started
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/Satish-011/Solrise.git
+   cd Solrise
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:8000](http://localhost:8000) in your browser.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Security
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Sensitive files (security reports, attack simulations) are NOT tracked in git or history.
+- `.env` files are ignored; `.env.example` is provided for configuration template.
+- All user input is validated; API routes are protected.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Customization
 
-## Learn More
+- Favicon and branding use the Solrise logo (orange rounded square with white lightning bolt).
+- To change branding, update `src/app/icon.svg` and navbar logo in `src/components/navbar/Navbar.tsx`.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Solrise is deployed on [Vercel](https://vercel.com/). Push to `main` branch to trigger redeploy.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT License. See LICENSE for details.
