@@ -67,15 +67,6 @@ export default function RootLayout({
                   </p>
                   <div className="flex items-center gap-3">
                     <a
-                      href="https://github.com/Satish-011"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-all"
-                      title="GitHub"
-                    >
-                      <i className="fa-brands fa-github text-sm" />
-                    </a>
-                    <a
                       href="https://www.linkedin.com/in/satish-kumar-a48729324"
                       target="_blank"
                       rel="noopener noreferrer"
