@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
           "default-src 'self'",
           isDev
             ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'"
-            : "script-src 'self' https://cdnjs.cloudflare.com",
+            : "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com",
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
           "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
           "img-src 'self' data: https: blob:",
@@ -48,8 +48,6 @@ const nextConfig: NextConfig = {
         ].join("; "),
       },
       { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-      { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
-      { key: "Cross-Origin-Embedder-Policy", value: "credentialless" },
       ...(isDev
         ? []
         : [
