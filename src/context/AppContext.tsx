@@ -109,13 +109,14 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const rawSubmissionsRef = useRef<any[]>([]);
   const hasFetchedForHandleRef = useRef<string | null>(null);
 
-  // Fetch problem set
+  // Fetch problem set with retry logic
   const fetchProblems = async () => {
     if (problems.length > 0) return;
     if (fetchProblemsPromiseRef.current) return fetchProblemsPromiseRef.current;
 
     const p = (async () => {
       setLoadingProblems(true);
+      setErrorProblems(null); // Clear previous errors on retry
       try {
         const stored = localStorage.getItem("cf_all_problems");
         if (stored) {
@@ -135,13 +136,36 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
           }
         }
 
-        const res = await fetch("/api/problems");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        // Retry up to 3 times with exponential backoff
+        const MAX_RETRIES = 3;
+        let lastError: Error | null = null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let data: any = null;
+
+        for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+          try {
+            if (attempt > 0) {
+              await new Promise((r) => setTimeout(r, 1000 * attempt));
+            }
+            const res = await fetch("/api/problems");
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            data = await res.json();
+            lastError = null;
+            break;
+          } catch (err) {
+            lastError =
+              err instanceof Error ? err : new Error(String(err));
+          }
+        }
+
+        if (lastError || !data) {
+          throw lastError || new Error("Failed to fetch problems");
+        }
+
         const allProblems = flattenProblemsResponse(data);
 
         const statsMap: Record<string, number> = {};
-        if (data.result.problemStatistics) {
+        if (data.result?.problemStatistics) {
           for (const stat of data.result.problemStatistics) {
             statsMap[makeKey(stat.contestId, stat.index)] = stat.solvedCount;
           }
@@ -169,12 +193,12 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         setErrorProblems("Failed to fetch problems");
       } finally {
         setLoadingProblems(false);
+        fetchProblemsPromiseRef.current = null; // Clear ref after state updates
       }
     })();
 
     fetchProblemsPromiseRef.current = p;
     await p;
-    fetchProblemsPromiseRef.current = null;
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
