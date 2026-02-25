@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { apiRateLimiter, getClientIp } from "@/utils/security";
 
 const CF_BASE_URL = "https://codeforces.com/api";
 const CF_TIMEOUT_MS = 15_000;
@@ -6,6 +7,15 @@ const CF_TIMEOUT_MS = 15_000;
 const HANDLE_RE = /^[a-zA-Z0-9_-]{3,24}$/;
 
 export async function GET(request: NextRequest) {
+  // Rate limit check
+  const ip = getClientIp(request);
+  if (!(await apiRateLimiter.check(ip))) {
+    return NextResponse.json(
+      { error: "Too many requests" },
+      { status: 429 },
+    );
+  }
+
   const handle = request.nextUrl.searchParams.get("handle")?.trim();
   const contestId = request.nextUrl.searchParams.get("contestId");
 

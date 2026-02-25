@@ -1,9 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { apiRateLimiter, getClientIp } from "@/utils/security";
 
 const CF_BASE_URL = "https://codeforces.com/api";
 const CF_TIMEOUT_MS = 15_000;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Rate limit check
+  const ip = getClientIp(request);
+  if (!(await apiRateLimiter.check(ip))) {
+    return NextResponse.json(
+      { error: "Too many requests" },
+      { status: 429 },
+    );
+  }
+
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), CF_TIMEOUT_MS);

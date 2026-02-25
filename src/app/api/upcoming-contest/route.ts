@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { apiRateLimiter, getClientIp } from "@/utils/security";
 
 const CF_BASE_URL = "https://codeforces.com/api";
 const CF_TIMEOUT_MS = 10_000;
@@ -12,7 +13,16 @@ const responseHeaders = {
   "X-Content-Type-Options": "nosniff",
 };
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Rate limit check
+  const ip = getClientIp(request);
+  if (!(await apiRateLimiter.check(ip))) {
+    return NextResponse.json(
+      { error: "Too many requests" },
+      { status: 429 },
+    );
+  }
+
   // Return cached data if still fresh
   if (cachedContest && Date.now() - cachedContest.timestamp < CACHE_TTL_MS) {
     return NextResponse.json(
