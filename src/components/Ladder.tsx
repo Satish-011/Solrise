@@ -133,17 +133,23 @@ const Ladder: React.FC<LadderProps> = ({
           )}
         </button>
 
-        {showTags && (
-          <div className="animate-fade-in-up">
-            <TagSelector
-              tags={sortedTags}
-              tagCounts={tagCounts}
-              selectedTags={selectedTags}
-              onToggleTag={handleToggleTag}
-              onClearAll={handleClearTags}
-            />
+        {/* Always mounted — animated via grid-rows height trick */}
+        <div
+          className="grid transition-[grid-template-rows] duration-300 ease-in-out"
+          style={{ gridTemplateRows: showTags ? "1fr" : "0fr" }}
+        >
+          <div className="overflow-hidden">
+            <div className="pt-1">
+              <TagSelector
+                tags={sortedTags}
+                tagCounts={tagCounts}
+                selectedTags={selectedTags}
+                onToggleTag={handleToggleTag}
+                onClearAll={handleClearTags}
+              />
+            </div>
           </div>
-        )}
+        </div>
       </section>
 
       {/* Empty state for no results */}
