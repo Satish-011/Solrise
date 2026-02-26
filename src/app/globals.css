@@ -338,7 +338,7 @@ body {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -382,7 +382,7 @@ body {
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.5s ease-out both;
+  animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out both;
@@ -391,39 +391,59 @@ body {
   animation: slideDown 0.3s ease-out both;
 }
 
+/* Page Transitions */
+.page-transition-enter {
+  animation: pageEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.page-transition-idle {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Stagger children */
 .stagger-children > * {
-  animation: fadeInUp 0.4s ease-out both;
+  animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .stagger-children > *:nth-child(1) {
-  animation-delay: 0.02s;
-}
-.stagger-children > *:nth-child(2) {
   animation-delay: 0.04s;
 }
-.stagger-children > *:nth-child(3) {
-  animation-delay: 0.06s;
-}
-.stagger-children > *:nth-child(4) {
+.stagger-children > *:nth-child(2) {
   animation-delay: 0.08s;
 }
-.stagger-children > *:nth-child(5) {
-  animation-delay: 0.1s;
-}
-.stagger-children > *:nth-child(6) {
+.stagger-children > *:nth-child(3) {
   animation-delay: 0.12s;
 }
-.stagger-children > *:nth-child(7) {
-  animation-delay: 0.14s;
-}
-.stagger-children > *:nth-child(8) {
+.stagger-children > *:nth-child(4) {
   animation-delay: 0.16s;
 }
+.stagger-children > *:nth-child(5) {
+  animation-delay: 0.2s;
+}
+.stagger-children > *:nth-child(6) {
+  animation-delay: 0.24s;
+}
+.stagger-children > *:nth-child(7) {
+  animation-delay: 0.28s;
+}
+.stagger-children > *:nth-child(8) {
+  animation-delay: 0.32s;
+}
 .stagger-children > *:nth-child(9) {
-  animation-delay: 0.18s;
+  animation-delay: 0.36s;
 }
 .stagger-children > *:nth-child(10) {
-  animation-delay: 0.2s;
+  animation-delay: 0.4s;
 }
 
 /* ── Skeleton Loader ── */
