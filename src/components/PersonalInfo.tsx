@@ -36,6 +36,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
     problems,
     userSolvedSet,
     attemptedUnsolvedProblems,
+    solvedCountInProblems,
     loadingProblems,
     fetchProblems,
   } = useAppContext();
@@ -60,11 +61,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   );
 
   const { totalSolved, totalAttemptedUnsolved, totalNotTried } = useMemo(() => {
-    const solvedSet = userSolvedSet || new Set<string>();
     const attemptedCount = attemptedKeys.size;
     const totalProblems =
       problems?.filter((p) => p && p.contestId != null).length ?? 0;
-    const solvedCount = solvedSet.size;
+    // Use solvedCountInProblems: intersects userSolvedSet with the actual problem list
+    // (excludes gym/virtual/unrated rounds not in the problem set)
+    const solvedCount = solvedCountInProblems;
     const notTried = Math.max(
       0,
       totalProblems - (solvedCount + attemptedCount),
@@ -74,7 +76,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
       totalAttemptedUnsolved: attemptedCount,
       totalNotTried: notTried,
     };
-  }, [problems, userSolvedSet, attemptedKeys]);
+  }, [problems, solvedCountInProblems, attemptedKeys]);
 
   const color = useMemo(
     () => getColorForRating(currentRating ?? undefined),

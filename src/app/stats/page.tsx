@@ -303,7 +303,8 @@ export default function StatsPage() {
     }
     return {
       total: problems.length,
-      solved: userSolvedSet.size,
+      // Use solvedCountInProblems: only counts problems in the actual problem set
+      solved: solvedCountInProblems,
       avg: enhancedStats.averageRating,
       hardest: enhancedStats.hardestSolved,
       streak: solvingStreak,
@@ -313,7 +314,7 @@ export default function StatsPage() {
     loadingUser,
     handle,
     problems.length,
-    userSolvedSet.size,
+    solvedCountInProblems,
     enhancedStats.averageRating,
     enhancedStats.hardestSolved,
     solvingStreak,

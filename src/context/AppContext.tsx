@@ -105,13 +105,15 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [loadingUser, setLoadingUser] = useState(false);
 
   const fetchProblemsPromiseRef = useRef<Promise<void> | null>(null);
+  const hasFetchedProblemsRef = useRef(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const rawSubmissionsRef = useRef<any[]>([]);
   const hasFetchedForHandleRef = useRef<string | null>(null);
 
   // Fetch problem set with retry logic
   const fetchProblems = async () => {
-    if (problems.length > 0) return;
+    // Use a stable ref instead of reactive state to avoid stale-closure race
+    if (hasFetchedProblemsRef.current) return;
     if (fetchProblemsPromiseRef.current) return fetchProblemsPromiseRef.current;
 
     const p = (async () => {
@@ -187,6 +189,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
 
         setProblems(mergedProblems);
         setTagCounts(computeTagCounts(mergedProblems));
+        hasFetchedProblemsRef.current = true;
         try {
           localStorage.setItem(
             "cf_all_problems",
@@ -433,6 +436,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     setSolvingStreak(0);
     setDailySolveCounts({});
     hasFetchedForHandleRef.current = null;
+    hasFetchedProblemsRef.current = false;
     localStorage.removeItem("cf_user_handle_v1");
   };
 

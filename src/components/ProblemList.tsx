@@ -5,10 +5,6 @@ import ProblemCard from "./ProblemCard";
 import ProblemSortControls from "./ProblemSortControls";
 import { Problem, UserStatus } from "../types";
 import { paginate } from "../utils/paginate";
-import {
-  loadContestMap,
-  parseDivisionFromContestName,
-} from "../utils/cfContests";
 
 interface ProblemListProps {
   problems: Problem[];
@@ -43,26 +39,8 @@ const ProblemList: React.FC<ProblemListProps> = ({
     localStorage.setItem("cf_hide_solved", String(v));
   };
 
-  const [contestMap, setContestMap] = useState<Record<number, string> | null>(
-    null,
-  );
 
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const map = await loadContestMap();
-        if (mounted) setContestMap(map);
-      } catch {
-        if (mounted) setContestMap(null);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, []);
 
-  const isLoading = problems.length === 0;
 
   useEffect(() => {
     setPage(1);
@@ -94,15 +72,7 @@ const ProblemList: React.FC<ProblemListProps> = ({
     return list;
   }, [problems, sortOption, hideSolved, userStatusMap, userSolvedSet]);
 
-  const contestDivisionMap = useMemo(() => {
-    if (!contestMap) return null;
-    const m: Record<number, string | null> = {};
-    for (const idStr of Object.keys(contestMap)) {
-      const id = Number(idStr);
-      m[id] = parseDivisionFromContestName(contestMap[id]);
-    }
-    return m;
-  }, [contestMap]);
+
 
   const totalPages = Math.max(1, Math.ceil(filteredSorted.length / perPage));
   const paged = paginate(filteredSorted, page, perPage);
@@ -115,15 +85,7 @@ const ProblemList: React.FC<ProblemListProps> = ({
     setPage(num);
   };
 
-  if (isLoading) {
-    return (
-      <div className="space-y-3">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-14 skeleton" />
-        ))}
-      </div>
-    );
-  }
+
 
   return (
     <div className="space-y-3.5">
@@ -144,13 +106,6 @@ const ProblemList: React.FC<ProblemListProps> = ({
             userStatusMap[key] ??
             (userSolvedSet.has(key) ? "solved" : "unsolved");
           const problemNumber = (page - 1) * perPage + idx + 1;
-          const contestId = p.contestId ?? undefined;
-          const division =
-            contestId && contestDivisionMap && contestDivisionMap[contestId]
-              ? contestDivisionMap[contestId]
-              : null;
-          const contestName =
-            contestId && contestMap ? contestMap[contestId] : undefined;
 
           return (
             <ProblemCard
@@ -158,8 +113,6 @@ const ProblemList: React.FC<ProblemListProps> = ({
               problem={p}
               status={status}
               number={problemNumber}
-              contestDivision={division ?? undefined}
-              contestName={contestName}
             />
           );
         })}

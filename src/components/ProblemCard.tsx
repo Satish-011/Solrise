@@ -9,8 +9,6 @@ interface ProblemCardProps {
   status: UserStatus;
   number?: number;
   isDarkMode?: boolean;
-  contestDivision?: string;
-  contestName?: string;
 }
 
 const ProblemCard: React.FC<ProblemCardProps> = ({
