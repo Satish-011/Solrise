@@ -310,6 +310,43 @@ body {
   color: var(--text-primary);
 }
 
+/* ── Navbar Active Indicator ── */
+.nav-active-indicator {
+  animation: navIndicatorIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes navIndicatorIn {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+/* ── Button Press Feedback ── */
+button:active:not(:disabled),
+a:active {
+  transform: scale(0.97);
+  transition-duration: 0.1s;
+}
+
+/* ── Theme Toggle Animation ── */
+.theme-toggle-spin {
+  animation: themeSpin 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes themeSpin {
+  from {
+    transform: rotate(-90deg) scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
 /* ── Stat Cards ── */
 .stat-card {
   position: relative;
@@ -404,6 +441,21 @@ body {
   from {
     opacity: 0;
     transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tab Content Transitions */
+.tab-content-enter {
+  animation: tabEnter 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes tabEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
   to {
     opacity: 1;

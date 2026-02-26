@@ -31,6 +31,8 @@ export interface AttemptInfo {
   link: string;
 }
 
+export type ActiveTab = "solrise" | "contests" | "topics" | "stats";
+
 interface AppContextType {
   problems: Problem[];
   tagCounts: Record<string, number>;
@@ -56,6 +58,8 @@ interface AppContextType {
   notTriedCount: number;
   solvingStreak: number;
   dailySolveCounts: Record<string, number>;
+  activeTab: ActiveTab;
+  setActiveTab: (tab: ActiveTab) => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -92,6 +96,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [errorProblems, setErrorProblems] = useState<string | null>(null);
 
   const [handle, setHandle] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<ActiveTab>("solrise");
 
   const [userInfo, setUserInfo] = useState<CFUserInfo | null>(null);
   const [userSolvedSet, setUserSolvedSet] = useState<Set<string>>(new Set());
@@ -519,6 +524,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         notTriedCount,
         solvingStreak,
         dailySolveCounts,
+        activeTab,
+        setActiveTab,
       }}
     >
       {children}

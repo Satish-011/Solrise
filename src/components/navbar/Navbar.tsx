@@ -5,6 +5,7 @@ import ThemeToggleButton from "./ThemeToggleButton";
 import ReportBug from "./ReportBug";
 import EnterHandle from "./EnterHandle";
 import { updateVisitStreak } from "@/utils/streakTracker";
+import { useAppContext, ActiveTab } from "@/context/AppContext";
 
 interface NavbarProps {
   handle?: string;
@@ -13,10 +14,10 @@ interface NavbarProps {
   userLoading?: boolean;
 }
 
-const NAV_LINKS = [
-  { href: "/contests", label: "Contests", icon: "fa-trophy" },
-  { href: "/topics", label: "Topics", icon: "fa-tags" },
-  { href: "/stats", label: "Stats", icon: "fa-chart-line" },
+const NAV_LINKS: { tab: ActiveTab; label: string; icon: string }[] = [
+  { tab: "contests", label: "Contests", icon: "fa-trophy" },
+  { tab: "topics", label: "Topics", icon: "fa-tags" },
+  { tab: "stats", label: "Stats", icon: "fa-chart-line" },
 ];
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -27,6 +28,7 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const { activeTab, setActiveTab } = useAppContext();
   const [mobileOpen, setMobileOpen] = useState(false);
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -39,6 +41,23 @@ const Navbar: React.FC<NavbarProps> = ({
     setVisitStreak(updateVisitStreak().currentStreak);
   }, []);
 
+  const handleTabClick = (tab: ActiveTab) => {
+    // If we're not on the home page, navigate there first
+    if (pathname !== "/") {
+      router.push("/");
+    }
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleLogoClick = () => {
+    if (pathname !== "/") {
+      router.push("/");
+    }
+    setActiveTab("solrise");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <header
       className="glass sticky top-0 z-50 animate-slide-down"
@@ -50,7 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-8">
             <button
               className="flex items-center gap-2.5 group"
-              onClick={() => router.push("/")}
+              onClick={handleLogoClick}
             >
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all">
                 <i className="fa-solid fa-bolt-lightning text-white text-sm" />
@@ -63,19 +82,22 @@ const Navbar: React.FC<NavbarProps> = ({
             {/* Desktop Nav Links */}
             <nav className="hidden md:flex items-center gap-1">
               {NAV_LINKS.map((link) => {
-                const isActive = pathname === link.href;
+                const isActive = activeTab === link.tab;
                 return (
                   <button
-                    key={link.href}
-                    onClick={() => router.push(link.href)}
-                    className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    key={link.tab}
+                    onClick={() => handleTabClick(link.tab)}
+                    className={`relative px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                       isActive
-                        ? "bg-[var(--accent-bg)] text-[var(--accent)] shadow-sm"
+                        ? "text-[var(--accent)]"
                         : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
                     }`}
                   >
                     <i className={`fa-solid ${link.icon} text-xs`} />
                     {link.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-2 right-2 h-[2px] rounded-full bg-[var(--accent)] nav-active-indicator" />
+                    )}
                   </button>
                 );
               })}
@@ -146,12 +168,12 @@ const Navbar: React.FC<NavbarProps> = ({
         <div className="md:hidden border-t border-[var(--border-color)] animate-slide-down">
           <div className="px-4 py-3 space-y-1">
             {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive = activeTab === link.tab;
               return (
                 <button
-                  key={link.href}
+                  key={link.tab}
                   onClick={() => {
-                    router.push(link.href);
+                    handleTabClick(link.tab);
                     setMobileOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-3 ${

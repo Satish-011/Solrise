@@ -18,6 +18,7 @@ export default function PageTransition({
       prevPathRef.current = pathname;
       setPhase("enter");
       setDisplayChildren(children);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       setDisplayChildren(children);
     }

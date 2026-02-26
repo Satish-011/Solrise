@@ -1,12 +1,28 @@
 ﻿"use client";
 
 import type { NextPage } from "next";
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import Ladder from "../components/Ladder";
 import PersonalInfo from "../components/PersonalInfo";
 import Unsolved from "../components/Unsolved";
 import UpcomingContestBanner from "../components/UpcomingContestBanner";
 import { useAppContext } from "../context/AppContext";
+
+// Lazy load tab content for performance
+const ContestsContent = lazy(() => import("../components/ContestsContent"));
+const TopicsContent = lazy(() => import("../components/TopicsContent"));
+const StatsContent = lazy(() => import("../components/StatsContent"));
+
+const TabSkeleton = () => (
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-4">
+    <div className="h-10 w-64 skeleton" />
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {[...Array(6)].map((_, i) => (
+        <div key={i} className="h-24 skeleton" />
+      ))}
+    </div>
+  </div>
+);
 
 const Home: NextPage = () => {
   const {
@@ -16,11 +32,13 @@ const Home: NextPage = () => {
     loadingProblems,
     loadingUser,
     errorProblems,
+    activeTab,
   } = useAppContext();
 
-  return (
-    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors">
-      {/* Upcoming Contest Banner - Sticky below navbar */}
+  // Render Solrise (home) tab content
+  const renderSolrise = () => (
+    <>
+      {/* Upcoming Contest Banner */}
       <UpcomingContestBanner />
 
       {/* Profile Section */}
@@ -77,6 +95,30 @@ const Home: NextPage = () => {
           </>
         )}
       </main>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors">
+      {/* Tab Content */}
+      <div className="tab-content-enter" key={activeTab}>
+        {activeTab === "solrise" && renderSolrise()}
+        {activeTab === "contests" && (
+          <Suspense fallback={<TabSkeleton />}>
+            <ContestsContent />
+          </Suspense>
+        )}
+        {activeTab === "topics" && (
+          <Suspense fallback={<TabSkeleton />}>
+            <TopicsContent />
+          </Suspense>
+        )}
+        {activeTab === "stats" && (
+          <Suspense fallback={<TabSkeleton />}>
+            <StatsContent />
+          </Suspense>
+        )}
+      </div>
     </div>
   );
 };

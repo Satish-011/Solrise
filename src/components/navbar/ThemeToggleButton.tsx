@@ -46,13 +46,15 @@ const ThemeToggleButton: React.FC = () => {
       onClick={toggleTheme}
       aria-label="Toggle theme"
       title="Toggle theme"
-      className="w-9 h-9 rounded-lg flex items-center justify-center bg-[var(--bg-tertiary)] border border-[var(--border-color)] hover:border-[var(--accent)] hover:scale-105 transition-all duration-200"
+      className="w-9 h-9 rounded-lg flex items-center justify-center bg-[var(--bg-tertiary)] border border-[var(--border-color)] hover:border-[var(--accent)] hover:scale-105 active:scale-95 transition-all duration-200 overflow-hidden"
     >
-      {theme === "light" ? (
-        <FaMoon className="text-[var(--text-secondary)] text-sm" />
-      ) : (
-        <FaSun className="text-amber-400 text-sm" />
-      )}
+      <span key={theme} className="theme-toggle-spin">
+        {theme === "light" ? (
+          <FaMoon className="text-[var(--text-secondary)] text-sm" />
+        ) : (
+          <FaSun className="text-amber-400 text-sm" />
+        )}
+      </span>
     </button>
   );
 };
