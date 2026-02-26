@@ -82,8 +82,16 @@ export default function ContestsPage() {
   useEffect(() => {
     (async () => {
       try {
-        const stored = localStorage.getItem("cf_finished_contests");
-        if (stored) {
+        const CACHE_KEY = "cf_finished_contests";
+        const CACHE_TS_KEY = "cf_finished_contests_ts";
+        const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+        const stored = localStorage.getItem(CACHE_KEY);
+        const storedTs = localStorage.getItem(CACHE_TS_KEY);
+        const isFresh =
+          storedTs && Date.now() - Number(storedTs) < CACHE_TTL_MS;
+
+        if (stored && isFresh) {
           try {
             const parsed = JSON.parse(stored);
             if (Array.isArray(parsed) && parsed.length > 0) {
@@ -93,7 +101,8 @@ export default function ContestsPage() {
             }
           } catch {
             try {
-              localStorage.removeItem("cf_finished_contests");
+              localStorage.removeItem(CACHE_KEY);
+              localStorage.removeItem(CACHE_TS_KEY);
             } catch {}
           }
         }
@@ -108,6 +117,7 @@ export default function ContestsPage() {
             "cf_finished_contests",
             JSON.stringify(data.contests),
           );
+          localStorage.setItem("cf_finished_contests_ts", String(Date.now()));
         }
       } catch (err) {
         // Silently handle errors in production
