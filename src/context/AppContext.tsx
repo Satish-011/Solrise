@@ -118,8 +118,16 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
       setLoadingProblems(true);
       setErrorProblems(null); // Clear previous errors on retry
       try {
-        const stored = localStorage.getItem("cf_all_problems");
-        if (stored) {
+        const PROBLEMS_CACHE_KEY = "cf_all_problems";
+        const PROBLEMS_CACHE_TS_KEY = "cf_all_problems_ts";
+        const PROBLEMS_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+        const stored = localStorage.getItem(PROBLEMS_CACHE_KEY);
+        const storedTs = localStorage.getItem(PROBLEMS_CACHE_TS_KEY);
+        const isProblemsCacheFresh =
+          storedTs && Date.now() - Number(storedTs) < PROBLEMS_CACHE_TTL_MS;
+
+        if (stored && isProblemsCacheFresh) {
           try {
             const parsed = JSON.parse(stored);
             // Security: Validate that parsed data is a non-empty array
@@ -131,7 +139,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
           } catch {
             // Corrupted cache — refetch from API
             try {
-              localStorage.removeItem("cf_all_problems");
+              localStorage.removeItem(PROBLEMS_CACHE_KEY);
+              localStorage.removeItem(PROBLEMS_CACHE_TS_KEY);
             } catch {}
           }
         }
@@ -183,6 +192,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
             "cf_all_problems",
             JSON.stringify(mergedProblems),
           );
+          localStorage.setItem("cf_all_problems_ts", String(Date.now()));
         } catch {
           // Ignore quota errors
         }
