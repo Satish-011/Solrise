@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     const res = await fetch(`${CF_BASE_URL}/contest.list`, {
       signal: controller.signal,
-      next: { revalidate: 3600 }, // cache for 1 hour
+      next: { revalidate: 300 }, // cache for 5 minutes
     });
 
     clearTimeout(timeout);
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
       { contests },
       {
         headers: {
-          "Cache-Control": "public, max-age=3600, stale-while-revalidate=7200",
+          "Cache-Control": "public, max-age=300, stale-while-revalidate=600",
           "X-Content-Type-Options": "nosniff",
         },
       },

@@ -11,9 +11,12 @@ interface LadderProps {
   userSolvedSet?: Set<string>;
 }
 
+// Hoist default empty Set to avoid creating a new reference per render
+const EMPTY_SET = new Set<string>();
+
 const Ladder: React.FC<LadderProps> = ({
   problems,
-  userSolvedSet = new Set(),
+  userSolvedSet = EMPTY_SET,
 }) => {
   const [selectedRating, setSelectedRating] = useState<number>(800);
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());

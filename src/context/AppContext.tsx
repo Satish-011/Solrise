@@ -2,6 +2,7 @@
 
 import React, {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -116,7 +117,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const hasFetchedForHandleRef = useRef<string | null>(null);
 
   // Fetch problem set with retry logic
-  const fetchProblems = async () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const fetchProblems = useCallback(async () => {
     // Use a stable ref instead of reactive state to avoid stale-closure race
     if (hasFetchedProblemsRef.current) return;
     if (fetchProblemsPromiseRef.current) return fetchProblemsPromiseRef.current;
@@ -127,7 +129,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
       try {
         const PROBLEMS_CACHE_KEY = "cf_all_problems";
         const PROBLEMS_CACHE_TS_KEY = "cf_all_problems_ts";
-        const PROBLEMS_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+        const PROBLEMS_CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours
 
         const stored = localStorage.getItem(PROBLEMS_CACHE_KEY);
         const storedTs = localStorage.getItem(PROBLEMS_CACHE_TS_KEY);
@@ -217,7 +219,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
 
     fetchProblemsPromiseRef.current = p;
     await p;
-  };
+  }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const processSubmissions = (subs: any[]) => {
@@ -500,12 +502,11 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handle, problems]);
 
-  return (
-    <AppContext.Provider
-      value={{
+    const contextValue = useMemo(
+    () => ({
         problems,
         tagCounts,
-        unsolvedProblems: [],
+        unsolvedProblems: [] as Problem[],
         attemptedUnsolvedProblems,
         handle,
         userInfo,
@@ -526,8 +527,29 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         dailySolveCounts,
         activeTab,
         setActiveTab,
-      }}
-    >
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      problems,
+      tagCounts,
+      attemptedUnsolvedProblems,
+      handle,
+      userInfo,
+      userSolvedSet,
+      loadingProblems,
+      loadingUser,
+      errorProblems,
+      solvedCountInProblems,
+      attemptedCountInProblems,
+      notTriedCount,
+      solvingStreak,
+      dailySolveCounts,
+      activeTab,
+    ],
+  );
+
+  return (
+    <AppContext.Provider value={contextValue}>
       {children}
     </AppContext.Provider>
   );

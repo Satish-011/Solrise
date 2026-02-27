@@ -9,7 +9,7 @@ let cachedData: { result: unknown; timestamp: number } | null = null;
 const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
 
 const responseHeaders = {
-  "Cache-Control": "public, max-age=3600, stale-while-revalidate=7200",
+  "Cache-Control": "public, max-age=1800, stale-while-revalidate=3600",
   "X-Content-Type-Options": "nosniff",
 };
 
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
   try {
     const res = await fetch(`${CF_BASE_URL}/problemset.problems`, {
       signal: controller.signal,
-      next: { revalidate: 3600 }, // Next.js fetch cache for 1 hour
+      next: { revalidate: 1800 }, // Next.js fetch cache for 30 minutes
     });
 
     clearTimeout(timeout);

@@ -40,12 +40,16 @@ const ProblemList: React.FC<ProblemListProps> = ({
   };
 
 
-
+  // Serialize selectedTags so the effect fires when tag content changes, not just count
+  const selectedTagsKey = useMemo(
+    () => [...selectedTags].sort().join(","),
+    [selectedTags],
+  );
 
   useEffect(() => {
     setPage(1);
     setPageInput("1");
-  }, [selectedTags.size]);
+  }, [selectedTagsKey]);
 
   const filteredSorted = useMemo(() => {
     let list = [...problems];
@@ -73,7 +77,6 @@ const ProblemList: React.FC<ProblemListProps> = ({
   }, [problems, sortOption, hideSolved, userStatusMap, userSolvedSet]);
 
 
-
   const totalPages = Math.max(1, Math.ceil(filteredSorted.length / perPage));
   const paged = paginate(filteredSorted, page, perPage);
 
@@ -84,7 +87,6 @@ const ProblemList: React.FC<ProblemListProps> = ({
     else if (num > totalPages) num = totalPages;
     setPage(num);
   };
-
 
 
   return (

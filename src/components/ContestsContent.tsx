@@ -81,41 +81,11 @@ export default function ContestsContent() {
   useEffect(() => {
     (async () => {
       try {
-        const CACHE_KEY = "cf_finished_contests";
-        const CACHE_TS_KEY = "cf_finished_contests_ts";
-        const CACHE_TTL_MS = 60 * 60 * 1000;
-
-        const stored = localStorage.getItem(CACHE_KEY);
-        const storedTs = localStorage.getItem(CACHE_TS_KEY);
-        const isFresh =
-          storedTs && Date.now() - Number(storedTs) < CACHE_TTL_MS;
-
-        if (stored && isFresh) {
-          try {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-              setContests(parsed);
-              setLoading(false);
-              return;
-            }
-          } catch {
-            try {
-              localStorage.removeItem(CACHE_KEY);
-              localStorage.removeItem(CACHE_TS_KEY);
-            } catch {}
-          }
-        }
-
         const res = await fetch("/api/contests");
         const data = await res.json();
 
         if (data.contests) {
           setContests(data.contests);
-          localStorage.setItem(
-            "cf_finished_contests",
-            JSON.stringify(data.contests),
-          );
-          localStorage.setItem("cf_finished_contests_ts", String(Date.now()));
         }
       } catch (err) {
         if (process.env.NODE_ENV !== "production") {

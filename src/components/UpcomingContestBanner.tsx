@@ -84,15 +84,15 @@ const UpcomingContestBanner: React.FC = () => {
   // Loading skeleton
   if (loading) {
     return (
-      <div className="sticky top-[64px] z-40 bg-[#161b22] border-b border-[#1f2937]">
+      <div className="sticky top-[64px] z-40 bg-[var(--bg-secondary)] border-b border-[var(--border-color)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-3 py-2">
             <div className="flex items-center gap-3 min-w-0 flex-1">
-              <div className="h-2 w-2 rounded-full bg-gray-700 animate-pulse" />
-              <div className="h-4 w-32 bg-gray-700 rounded animate-pulse" />
+              <div className="h-2 w-2 rounded-full bg-[var(--text-muted)] animate-pulse" />
+              <div className="h-4 w-32 skeleton" />
             </div>
-            <div className="h-4 w-24 bg-gray-700 rounded animate-pulse" />
-            <div className="h-6 w-16 bg-gray-700 rounded animate-pulse" />
+            <div className="h-4 w-24 skeleton" />
+            <div className="h-6 w-16 skeleton" />
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@ const UpcomingContestBanner: React.FC = () => {
   }
 
   return (
-    <div className="sticky top-[64px] z-40 animate-fade-in bg-[#161b22] border-b border-[#1f2937]">
+    <div className="sticky top-[64px] z-40 animate-fade-in bg-[var(--bg-secondary)] border-b border-[var(--border-color)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3 py-2">
           {/* Left: Live Indicator + Contest Info */}
@@ -117,16 +117,16 @@ const UpcomingContestBanner: React.FC = () => {
             </div>
 
             {/* Contest Name */}
-            <span className="text-sm text-gray-400 shrink-0 hidden sm:inline">
+            <span className="text-sm text-[var(--text-muted)] shrink-0 hidden sm:inline">
               Upcoming:
             </span>
-            <span className="text-sm font-semibold text-white truncate">
+            <span className="text-sm font-semibold text-[var(--text-primary)] truncate">
               {upcomingContest.name}
             </span>
           </div>
 
           {/* Center: Countdown Timer (Monospace to prevent jitter) */}
-          <div className="flex items-center gap-1 font-mono text-sm text-white shrink-0 tabular-nums">
+          <div className="flex items-center gap-1 font-mono text-sm text-[var(--text-primary)] shrink-0 tabular-nums">
             {timeLeft.days > 0 && (
               <span>{String(timeLeft.days).padStart(2, "0")}d</span>
             )}
@@ -147,7 +147,7 @@ const UpcomingContestBanner: React.FC = () => {
             </a>
             <button
               onClick={handleDismiss}
-              className="w-6 h-6 rounded flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+              className="w-6 h-6 rounded flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
               title="Dismiss"
               aria-label="Dismiss notification"
             >

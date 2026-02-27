@@ -1,39 +1,43 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import React, { useSyncExternalStore } from "react";
 import { Problem, UserStatus } from "../types";
 import { FaUser } from "react-icons/fa";
 import { cfRatingColors } from "../utils/cfRatingColors";
 import { getTagColor } from "../utils/tagColors";
 
+// Shared dark-mode subscription — all ProblemCards share one listener instead of N MutationObservers
+const subscribe = (cb: () => void) => {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const mo = new MutationObserver(cb);
+  mo.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme", "class"],
+  });
+  mq.addEventListener("change", cb);
+  return () => {
+    mo.disconnect();
+    mq.removeEventListener("change", cb);
+  };
+};
+const getIsDark = () => {
+  const attr = document.documentElement.getAttribute("data-theme");
+  if (attr === "dark") return true;
+  if (attr === "light") return false;
+  return document.documentElement.classList.contains("dark");
+};
+const getServerSnapshot = () => false;
+
 interface ProblemCardProps {
   problem: Problem;
   status: UserStatus;
   number?: number;
-  isDarkMode?: boolean;
 }
 
 const ProblemCard: React.FC<ProblemCardProps> = ({
   problem,
   status,
   number,
-  isDarkMode = false,
 }) => {
-  const [isDark, setIsDark] = useState<boolean>(isDarkMode);
-
-  useEffect(() => {
-    const update = () => {
-      const attr = document.documentElement.getAttribute("data-theme");
-      if (attr === "dark") return setIsDark(true);
-      if (attr === "light") return setIsDark(false);
-      setIsDark(document.documentElement.classList.contains("dark"));
-    };
-    update();
-    const mo = new MutationObserver(update);
-    mo.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme", "class"],
-    });
-    return () => mo.disconnect();
-  }, []);
+  const isDark = useSyncExternalStore(subscribe, getIsDark, getServerSnapshot);
 
   const isSolved = status === "solved";
   const isFailed = status === "failed";
