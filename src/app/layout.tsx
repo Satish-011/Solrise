@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppContextProvider } from "../context/AppContext";
 import NavbarWrapper from "@/components/navbar/NavbarWrapper";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -83,6 +84,7 @@ export default function RootLayout({
           </div>
         </AppContextProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
