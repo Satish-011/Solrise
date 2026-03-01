@@ -97,7 +97,15 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [errorProblems, setErrorProblems] = useState<string | null>(null);
 
   const [handle, setHandle] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<ActiveTab>("solrise");
+  const [activeTab, setActiveTabState] = useState<ActiveTab>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("cf_active_tab");
+      if (saved === "solrise" || saved === "contests" || saved === "topics" || saved === "stats") {
+        return saved as ActiveTab;
+      }
+    }
+    return "solrise";
+  });
 
   const [userInfo, setUserInfo] = useState<CFUserInfo | null>(null);
   const [userSolvedSet, setUserSolvedSet] = useState<Set<string>>(new Set());
@@ -526,7 +534,10 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         solvingStreak,
         dailySolveCounts,
         activeTab,
-        setActiveTab,
+        setActiveTab: (tab: ActiveTab) => {
+          setActiveTabState(tab);
+          try { localStorage.setItem("cf_active_tab", tab); } catch {}
+        },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
