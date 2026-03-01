@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AppContextProvider } from "../context/AppContext";
 import NavbarWrapper from "@/components/navbar/NavbarWrapper";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -81,6 +82,7 @@ export default function RootLayout({
             </footer>
           </div>
         </AppContextProvider>
+        <Analytics />
       </body>
     </html>
   );
